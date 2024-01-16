@@ -1,0 +1,71 @@
+/* Add your existing styles and any additional styles for the "Admin Panel" section here */
+* {
+    transition: all 0.2s ease-in-out;
+    scroll-behavior: smooth;
+  }
+body {
+    font-size: 0.875rem;
+}
+
+#sidebar {
+    min-width: 230px;
+    max-width: 230px;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 48px 0 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: .5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.sidebar a {
+    display: block;
+    padding: 6px 0;
+    color: #333;
+}
+
+.sidebar a:hover {
+    color: #007bff;
+}
+
+.sidebar .bi {
+    margin-right: 10px;
+}
+
+main {
+    padding: 10px;
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #007BFF; /* You can adjust the color as needed */
+  }
+  
+  input,
+  textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  input[type=submit] {
+    background-color: #007BFF; /* You can adjust the color as needed */
+    color: #fff;
+    cursor: pointer;
+  }
