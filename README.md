@@ -27,4 +27,4 @@ GARAGEKOM is a web-based application designed to manage various aspects of a car
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/garagekom.git
+   git clone https://github.com/NoureddineDRIOUECH/GARAGEKOM_Car_Repair
