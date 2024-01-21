@@ -7,6 +7,22 @@ body {
     font-size: 0.875rem;
 }
 
+
+#home {
+    padding: 100px 0;
+  }
+  
+  .main-heading {
+    font-size: 3rem;
+    color: #007BFF; /* You can adjust the color as needed */
+  }
+  
+  .sub-heading {
+    font-size: 1.5rem;
+    font-style: italic;
+    color: #6C757D; /* You can adjust the color as needed */
+  }
+
 #sidebar {
     min-width: 230px;
     max-width: 230px;

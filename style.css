@@ -75,6 +75,125 @@
   box-shadow: none;
 }
 
+/* Add your existing styles and any additional styles for the "Login" section here */
+#login {
+  padding: 40px 0;
+}
+
+.section-heading {
+  font-size: 2.5rem;
+  color: #007BFF; /* You can adjust the color as needed */
+}
+
+.row {
+  margin-top: 40px;
+}
+
+form {
+  text-align: center;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #007BFF; /* You can adjust the color as needed */
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=submit] {
+  background-color: #007BFF; /* You can adjust the color as needed */
+  color: #fff;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #0056b3; /* You can adjust the color as needed */
+}
+
+/* Additional styles for the links */
+a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+/* Add your existing styles and any additional styles for the "Sign Up" section here */
+#signup {
+  padding: 40px 0;
+}
+
+.section-heading {
+  font-size: 2.5rem;
+  color: #007BFF; /* You can adjust the color as needed */
+}
+
+.row {
+  margin-top: 40px;
+}
+
+form {
+  text-align: center;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #007BFF; /* You can adjust the color as needed */
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=submit] {
+  background-color: #007BFF; /* You can adjust the color as needed */
+  color: #fff;
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  background-color: #0056b3; /* You can adjust the color as needed */
+}
+
+/* Additional styles for the links */
+a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+/* Add your existing styles and any additional styles for the "Home" section here */
+#home {
+  padding: 100px 0;
+  background-image: url(src/pics/homeBg.jpeg);
+  height: 750px;
+  border-radius: 20px;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.main-heading {
+  font-size: 3rem;
+  color: #007BFF; /* You can adjust the color as needed */
+}
+
+.sub-heading {
+  font-size: 1.5rem;
+  font-style: italic;
+  color: #6C757D; /* You can adjust the color as needed */
+}
+
 /* Add your existing styles and any additional styles for the "Service Request" section here */
 #request {
   padding: 40px 0;

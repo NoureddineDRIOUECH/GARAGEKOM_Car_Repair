@@ -4,8 +4,9 @@ if (!isset($_SESSION['user'])) {
     header("Location: login.php");
     exit();
 }
-if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic") {
+
+// Ensure that only admins have access to the dashboard
+if ($_SESSION['user']->role !== "admin") {
     header("Location: login.php");
     exit();
 }
-require_once('dashboard.php');

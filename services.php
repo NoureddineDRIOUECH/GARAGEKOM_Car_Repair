@@ -62,9 +62,12 @@
                 </div>
             </div>
 
-            <p class="text-center mt-5 mb-5">For more information on our services or to schedule an appointment, <a class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover" href="contact.php">contact us</a> today. Trust GARAJKOM for all your automotive needs! </p>
+            <p class="text-center mt-5 mb-5">For more information on our services or to schedule an appointment, <a
+                    class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+                    href="contact.php">contact us</a> today. Trust GARAJKOM for all your automotive needs! </p>
         </div>
-        <?php require_once('footer.html') ?>
+    </div>
+    <?php require_once('footer.html') ?>
 </body>
 
 </html>

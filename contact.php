@@ -4,6 +4,21 @@
 
 <body>
     <?php require_once('nav.html') ?>
+    <?php require_once('admin/connect-DB.php') ?>
+    <?php
+    if (isset($_POST['submit'])) {
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+        $phone = $_POST['tel'];
+        $message = $_POST['message'];
+        $contact = $database->prepare("INSERT INTO contacts (name, email, phone, message) VALUES (:name, :email, :phone, :message)");
+        $contact->bindParam(':name', $name);
+        $contact->bindParam(':email', $email);
+        $contact->bindParam(':phone', $phone);
+        $contact->bindParam(':message', $message);
+        $contact->execute();
+    }
+    ?>
     <div class="container mt-5">
         <section id="contact" class="text-center">
             <h2 class="section-heading">Contact GARAGEKOM</h2>
@@ -21,7 +36,7 @@
             </div>
             <div class="col-md-6">
                 <h3>Get in Touch</h3>
-                <form action="#" method="post">
+                <form method="post">
                     <label class="form-label" for="name">Name:</label>
                     <input class="form-control" type="text" id="name" name="name" required>
 
@@ -29,12 +44,12 @@
                     <input class="form-control" type="email" id="email" name="email" required>
 
                     <label class="form-label" for="tel">Phone:</label>
-                    <input class="form-control" type="number" id="tel" name="tel" required>
+                    <input class="form-control" type="text" id="tel" name="tel" required>
 
                     <label class="form-label" for="message">Message:</label>
                     <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
 
-                    <input class="btn btn-primary mt-3" type="submit" value="Send Message">
+                    <input name="submit" class="btn btn-primary mt-3" type="submit" value="Send Message">
                 </form>
             </div>
         </div>
