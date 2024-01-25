@@ -25,20 +25,7 @@ window.addEventListener("DOMContentLoaded", setTheme);
 let dateNow = new Date();
 let mycopyrightp = document.createElement("p");
 mycopyrightp.innerHTML =
-  "&copy; " + dateNow.getFullYear() + " DRCoffee. Tous droits réservés.";
+  "&copy; Copyright " +
+  dateNow.getFullYear() +
+  " GARAGEKOM. All rights reserved.";
 document.querySelector("div.copyright").appendChild(mycopyrightp);
-
-// function submitForm() {
-//   // Perform your CAPTCHA verification here
-//   var response = grecaptcha.getResponse();
-
-//   if (response.length == 0) {
-//     // Show the Bootstrap modal
-//     $("#captchaModal").modal("show");
-//     return false;
-//   }
-
-//   // If CAPTCHA is verified, proceed with form submission
-//   document.forms[0].submit();
-// }
-//fucntion for recaptcha verification chekbox
