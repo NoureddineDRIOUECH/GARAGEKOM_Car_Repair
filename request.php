@@ -1,4 +1,7 @@
 <?php require_once('head.html') ?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <title>GARAGEKOM | Request</title>
 </head>
 
@@ -49,15 +52,82 @@
         $addRequest->bindParam(':serviceId', $serviceWanted);
         $addRequest->bindParam(':carId', $carId);
         $addRequest->bindParam(':employeeId', $employeeId);
-        $addRequest->execute();
-        echo '<script type="text/javascript">
-                  var successToast = document.getElementById("successToast");
-                  successToast.classList.add("show");
-                  setTimeout(function() {
-                    successToast.classList.remove("show");
-                  }, 3000);
-                  })
-              </script>';
+        if ($addRequest->execute()) {
+            require_once "mail.php";
+            $mail->addAddress($email);
+            $mail->Subject = "Service Request";
+            $mail->Body = "
+            <!DOCTYPE html>
+            <html lang='en'>
+            <head>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                <title>GARAGEKOM Service Request Confirmation</title>
+                <style>
+                    body {
+                        font-family: 'Roboto', sans-serif;
+                        background-color: #f4f4f4;
+                        color: #333;
+                        margin: 0;
+                        padding: 20px;
+                    }
+                    .container {
+                        max-width: 600px;
+                        margin: 0 auto;
+                        background-color: #fff;
+                        border-radius: 5px;
+                        overflow: hidden;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        border-radius : 25px;
+                    }
+                    .bg-primary {
+                        background-color: #0d6efd;
+                        padding: 20px;
+                        color: #fff;
+                    }
+                    .text-primary {
+                        color: #0d6efd;
+                    }
+                    .p-4 {
+                        padding: 20px;
+                    }
+                    .bg-light {
+                        background-color: #f8f9fa;
+                        padding: 10px;
+                        text-align: center;
+                    }
+                    .text-muted {
+                        color: #6c757d;
+                    }
+                </style>
+            </head>
+            <body>
+                <table class='container'>
+                    <tr>
+                        <td class='bg-primary text-center'>
+                            <h1 class='mb-0'>GARAGEKOM</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class='p-4'>
+                            <h2 class='text-primary'>Service Request Confirmation</h2>
+                            <p>Thank you for your request. We will get back to you shortly.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class='bg-light'>
+                            <p class='mb-0 text-muted'>GARAGEKOM - Casablanca</p>
+                        </td>
+                    </tr>
+                </table>
+            </body>
+            </html>
+            ";
+
+            $mail->setFrom("oyuncoyt@gmail.com", "Garagekom");
+            $mail->send();
+            header('Location: request.php?success=true');
+        }
     }
     ?>
 
@@ -75,8 +145,7 @@
                     <input class="form-control mb-2" type="text" id="fullName" name="fullName" required>
 
                     <label class="form-label" for="phoneNumber">Phone Number:</label>
-                    <input class="form-control mb-2" type="tel" id="phoneNumber" name="phoneNumber" min="10" max="15"
-                        required>
+                    <input class="form-control mb-2" type="tel" id="phoneNumber" name="phoneNumber" min="10" max="15" required>
 
                     <label class="form-label" for="email">Email:</label>
                     <input class="form-control mb-2" type="email" id="email" name="email" required>
@@ -85,19 +154,16 @@
                     <input class="form-control mb-2" type="text" id="address" name="address" required>
 
                     <label class="form-label" for="carBrand">Car Brand:</label>
-                    <input class="form-control mb-2" type="text" id="carBrand" placeholder="Mercedes" name="carBrand"
-                        required>
+                    <input class="form-control mb-2" type="text" id="carBrand" placeholder="Mercedes" name="carBrand" required>
 
                     <label class="form-label" for="carName">Car Name:</label>
                     <input class="form-control mb-2" type="text" id="carName" placeholder="G63" name="carName" required>
 
                     <label class="form-label" for="carModel">Car Model:</label>
-                    <input class="form-control mb-2" min="1900" max="<?php echo date("Y"); ?>" type="number"
-                        id="carModel" placeholder="2024" name="carModel" required>
+                    <input class="form-control mb-2" min="1900" max="<?php echo date("Y"); ?>" type="number" id="carModel" placeholder="2024" name="carModel" required>
 
                     <label class="form-label" for="carRegistration">Car Registration:</label>
-                    <input class="form-control mb-2" type="text" id="carRegistration"
-                        placeholder="example :  36176 A 10" name="carRegistration" required>
+                    <input class="form-control mb-2" type="text" id="carRegistration" placeholder="example :  36176 A 10" name="carRegistration" required>
 
                     <label class="form-label" for="requestType">Request Type:</label>
                     <select id="requestType" name="requestType" class="form-select mb-2" required>
@@ -119,17 +185,14 @@
             </div>
         </div>
     </div>
-
-    <div class="toast" id="successToast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-            <strong class="me-auto">Success</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-            Request submitted successfully!
-        </div>
-    </div>
     <?php require_once('footer.html') ?>
+    <script>
+        $(document).ready(function() {
+            <?php if (isset($_GET['success']) && $_GET['success'] === 'true') : ?>
+                toastr.success('Your service request has been submitted successfully!');
+            <?php endif; ?>
+        });
+    </script>
 </body>
 
 </html>

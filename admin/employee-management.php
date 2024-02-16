@@ -91,7 +91,7 @@
                                 echo "<td>" . $employee["employee_name"] . "</td>";
                                 echo "<td>" . $employee["employee_phone"] . "</td>";
                                 echo "<td>" . $employee["employee_address"] . "</td>";
-                                echo "<td>" . $employee["employee_salary"] . "</td>";
+                                echo "<td>" . number_format($employee["employee_salary"], 2, '.', ' ') . "</td>";
                                 echo "<td>" . $employee["employee_position"] . "</td>";
                                 echo "<td>" . $employee["employee_added_date"] . "</td>";
                                 echo "<td>";

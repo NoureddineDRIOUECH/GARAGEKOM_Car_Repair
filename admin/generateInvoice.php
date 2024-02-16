@@ -32,9 +32,44 @@ if (isset($data->request_id) && isset($data->handWordPrice)) {
         $invoice->bindParam(":request_id", $request_id);
         $invoice->bindParam(":total", $total);
         if ($invoice->execute()) {
-            print_r(json_encode(['success' => true, 'message' => 'Invoice generated successfully']));
+
+            $request = $database->prepare("SELECT client_id, service_id, car_id FROM service_requests WHERE request_id = :request_id");
+            $request->bindParam(":request_id", $request_id);
+            $request->execute();
+            $request = $request->fetch();
+            $invoice = $database->prepare("SELECT invoice_date, total_amount FROM invoices WHERE service_request_id = :request_id");
+            $invoice->bindParam(":request_id", $request_id);
+            $invoice->execute();
+            $invoice = $invoice->fetch();
+            $client = $database->prepare("SELECT client_name, client_email, client_phone FROM clients WHERE client_id = :client_id");
+            $client->bindParam(":client_id", $request['client_id']);
+            $client->execute();
+            $client = $client->fetch();
+            $car = $database->prepare("SELECT car_registration FROM cars WHERE car_id = :car_id");
+            $car->bindParam(":car_id", $request['car_id']);
+            $car->execute();
+            $car = $car->fetchColumn();
+            $service = $database->prepare("SELECT service_name FROM services WHERE service_id = :service_id");
+            $service->bindParam(":service_id", $request['service_id']);
+            $service->execute();
+            $service = $service->fetch();
+            require_once "../mail.php";
+
+            $mail->addAddress($client['client_email']);
+            $mail->Subject = "Service Request";
+            ob_start();
+            include "invoice_template.php";
+            $mailBody = ob_get_clean();
+
+            $mail->Body = $mailBody;
+            $mail->setFrom("oyuncoyt@gmail.com", "Garagekom");
+            if ($mail->send()) {
+                print_r(json_encode(['success' => true, 'message' => 'Invoice generated successfully']));
+            } else {
+                print_r(json_encode(['success' => false, 'message' => 'Error sending email: ' . $mail->ErrorInfo]));
+            }
         } else {
-            print_r(json_encode(['success' => false, 'message' => 'Error generating invoice: ' . $invoice->errorInfo()]));
+            print_r(json_encode(['success' => false, 'message' => 'Error generating invoice: ' . implode(", ", $invoice->errorInfo())]));
         }
     }
 }
