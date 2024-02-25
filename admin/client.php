@@ -106,7 +106,8 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
                 <h2>Client Management</h2>
 
                 <div class="mb-4">
-                    <button type="submit" class="btn btn-warning mt-3" data-bs-toggle="modal" data-bs-target="#addClient">Add Client</button>
+                    <button type="submit" class="btn btn-warning mt-3" data-bs-toggle="modal"
+                        data-bs-target="#addClient">Add Client</button>
                 </div>
 
                 <div class="table-responsive">
@@ -126,7 +127,7 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
                         </thead>
                         <tbody>
                             <?php
-                            $clients = $database->prepare("SELECT * FROM clients");
+                            $clients = $database->prepare("SELECT * FROM clients ORDER BY client_added_date DESC");
                             $clients->execute();
                             $clients = $clients->fetchAll(PDO::FETCH_ASSOC);
                             foreach ($clients as $client) {
@@ -177,7 +178,8 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
                                 <input type="text" name="address" id="address" class="form-control mb-3" required>
 
                                 <label for="registration" class="form-label">Car Registration</label>
-                                <input type="text" name="registration" id="registration" class="form-control mb-3" required>
+                                <input type="text" name="registration" id="registration" class="form-control mb-3"
+                                    required>
 
                                 <label for="brand" class="form-label">Car Brand</label>
                                 <input type="text" name="brand" id="brand" class="form-control mb-3" required>
@@ -187,7 +189,8 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
 
                                 <input type="hidden" name="client_id" id="edit_client_id">
                                 <label for="model" class="form-label">Model</label>
-                                <input type="number" min="1900" max="<?php echo date("Y"); ?>" name="model" id="model" class="form-control mb-3" required>
+                                <input type="number" min="1900" max="<?php echo date("Y"); ?>" name="model" id="model"
+                                    class="form-control mb-3" required>
 
                         </div>
                         <div class="modal-footer">
@@ -250,7 +253,8 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
                                 <input type="text" name="address" id="address" class="form-control mb-3" required>
 
                                 <label for="registration" class="form-label">Car Registration</label>
-                                <input type="text" name="registration" id="registration" class="form-control mb-3" required>
+                                <input type="text" name="registration" id="registration" class="form-control mb-3"
+                                    required>
 
                                 <label for="brand" class="form-label">Car Brand</label>
                                 <input type="text" name="brand" id="brand" class="form-control mb-3" required>
@@ -260,7 +264,8 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
 
 
                                 <label for="model" class="form-label">Model</label>
-                                <input type="number" min="1900" max="<?php echo date("Y"); ?>" name="model" id="model" class="form-control mb-3" required>
+                                <input type="number" min="1900" max="<?php echo date("Y"); ?>" name="model" id="model"
+                                    class="form-control mb-3" required>
 
                         </div>
                         <div class="modal-footer">
@@ -273,21 +278,21 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
             </div>
             <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
             <script>
-                // Edit Client Modal
-                $('#aditClient').on('show.bs.modal', function(event) {
-                    var button = $(event.relatedTarget); // Button that triggered the modal
-                    var clientId = button.data('bs-id'); // Extract info from data-bs-id attribute
-                    var modal = $(this);
-                    modal.find('#edit_client_id').val(clientId);
-                });
+            // Edit Client Modal
+            $('#aditClient').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var clientId = button.data('bs-id'); // Extract info from data-bs-id attribute
+                var modal = $(this);
+                modal.find('#edit_client_id').val(clientId);
+            });
 
-                // Delete Client Modal
-                $('#deleteClient').on('show.bs.modal', function(event) {
-                    var button = $(event.relatedTarget); // Button that triggered the modal
-                    var clientId = button.data('bs-id'); // Extract info from data-bs-id attribute
-                    var modal = $(this);
-                    modal.find('#delete_client_id').val(clientId);
-                });
+            // Delete Client Modal
+            $('#deleteClient').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var clientId = button.data('bs-id'); // Extract info from data-bs-id attribute
+                var modal = $(this);
+                modal.find('#delete_client_id').val(clientId);
+            });
             </script>
 </body>
 

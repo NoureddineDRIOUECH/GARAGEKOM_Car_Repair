@@ -67,7 +67,7 @@
             </thead>
             <tbody>
               <?php
-              $users = $database->query("SELECT * FROM users");
+              $users = $database->query("SELECT * FROM users ORDER BY user_id DESC");
               $users = $users->fetchAll(PDO::FETCH_ASSOC);
               foreach ($users as $user) {
                 echo '

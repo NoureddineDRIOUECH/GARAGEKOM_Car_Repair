@@ -28,6 +28,42 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 }
 </style>
+<script>
+function generateInvoice(request_id) {
+    fetch("generateInvoice.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                request_id: request_id,
+            }),
+
+        }).then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                function showToast(message) {
+                    var toast = document.getElementById("toastS");
+                    toast.innerHTML = message;
+                    toast.style.display = "block";
+                    setTimeout(function() {
+                        toast.style.display = "none";
+                    }, 3000);
+                }
+                showToast("Inovoice generated successfuly!");
+            } else {
+                showToast("Error generating Inovoice!");
+            }
+        })
+        .then(() => {
+            window.location.reload();
+        })
+        .catch((error) => {
+            showBootstrapToast("Error generating invoice.", "bg-danger");
+            console.error("Error generating invoice:", error);
+        });
+}
+</script>
 </head>
 
 <body>
@@ -44,9 +80,91 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
             <?php require_once('connect-DB.php') ?>
             <?php
             if (isset($_POST['update_status'])) {
+                $value = $_POST['status'];
+                $request_id = $_POST['request_id'];
+                if ($value == "Completed") {
+                    echo "<script>generateInvoice(" . $request_id . ")</script>";
+                }
+                if ($value == "In progress") {
+                    $clientName = $database->prepare("SELECT client_name, client_email FROM service_requests INNER JOIN clients ON service_requests.client_id = clients.client_id WHERE request_id = :request_id");
+                    $clientName->bindParam(':request_id', $request_id);
+                    $clientName->execute();
+                    $clientName = $clientName->fetch();
+
+                    $subject = "Service Request Updated";
+                    $message = "
+                    <!DOCTYPE html>
+            <html>
+            <head>
+              <title>GARAGEKOM | Service Request Update</title>
+              <style>
+                body {
+                  font-family: Arial, sans-serif;
+                  margin: 0;
+                  padding: 0;
+                }
+            
+                .container {
+                  width: 600px;
+                  margin: 20px auto;
+                  border-radius: 5px;
+                  background-color: #f5f5f5;
+                  padding: 20px;
+                }
+            
+                h2 {
+                  background-color: #0d6efd;
+                  color: #fff;
+                  padding: 15px;
+                  border-radius: 5px;
+                  font-size: 20px;
+                  margin-bottom: 15px;
+                }
+            
+                p {
+                  font-size: 16px;
+                  line-height: 1.5;
+                  margin-bottom: 10px;
+                }
+            
+                a {
+                  color: #0d6efd;
+                  text-decoration: none;
+                }
+              </style>
+            </head>
+            
+            <body>
+              <div class='container'>
+                <h2>GARAGEKOM | Service Request Updated</h2>
+                <p>Dear " . $clientName['client_name'] . ",</p>
+                <p>We are writing to inform you that your service request with ID " . $request_id . " has been updated to 'In progress.' Our dedicated team is currently working on it, and we will keep you informed of the progress.</p>
+                <p>We appreciate your patience and understanding. If you have any questions or concerns, please do not hesitate to contact us by replying to this email or calling us at <a href='tel:+212660133665'>06-60-13-36-65</a>.</p>
+                <p>Sincerely,</p>
+                <p>The GARAGEKOM Team</p>
+              </div>
+            </body>
+            </html>
+                    ";
+                    require_once "../mail.php";
+                    $mail->addAddress($clientName['client_email']);
+
+                    $mail->Subject = $subject;
+                    $mail->Body = $message;
+                    $mail->setFrom("oyuncoyt@gmail.com", "Garagekom");
+                    $mail->send();
+                }
+
                 $updateStatus = $database->prepare("UPDATE service_requests SET status = :request_status WHERE request_id = :request_id");
-                $updateStatus->bindParam(':request_status', $_POST['status']);
-                $updateStatus->bindParam(':request_id', $_POST['request_id']);
+                $updateStatus->bindParam(':request_status', $value);
+                $updateStatus->bindParam(':request_id', $request_id);
+                $updateStatus->execute();
+                echo "<script>window.location.href = 'service-request.php';</script>";
+
+
+                $updateStatus = $database->prepare("UPDATE service_requests SET status = :request_status WHERE request_id = :request_id");
+                $updateStatus->bindParam(':request_status', $value);
+                $updateStatus->bindParam(':request_id', $request_id);
                 $updateStatus->execute();
                 echo "<script>window.location.href = 'service-request.php';</script>";
             }
@@ -101,6 +219,7 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
                                 <th>Parts Added</th>
                                 <th>Mechanic</th>
                                 <th>Status</th>
+                                <th>Problem</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -113,7 +232,8 @@ ORDER BY
         WHEN status = 'In progress' THEN 2
         WHEN status = 'Completed' THEN 3
         ELSE 4
-    END");
+    END,
+    request_date DESC");
                             $requests->execute();
                             $requests = $requests->fetchAll(PDO::FETCH_ASSOC);
                             foreach ($requests as $request) {
@@ -163,6 +283,7 @@ ORDER BY
                                 $employee = $employee->fetch();
                                 echo "<td>" . $employee['employee_name'] . "</td>";
                                 echo "<td>" . $request['status'] . "</td>";
+                                echo "<td>" . $request['problem_description'] . "</td>";
                                 echo "<td>";
                                 if ($request['status'] != "Completed") {
                                     echo "<button type='button' class='btn btn-outline-primary btn-sm' data-bs-toggle='modal' data-bs-target='#update' data-bs-id='" . $request['request_id'] . "' >Update status</button>";
@@ -172,14 +293,14 @@ ORDER BY
                                 }
                                 if (($request['status'] == "Completed")) {
                                     // check if the request have a invoice 
-                                    $checkInvoice = $database->prepare("SELECT * FROM invoices WHERE service_request_id = :request_id");
-                                    $checkInvoice->bindParam(':request_id', $request['request_id']);
-                                    $checkInvoice->execute();
-                                    if ($checkInvoice->rowCount() == 0) {
-                                        echo "<button type='button' data-bs-toggle='modal' data-bs-target='#generateInvoice' data-bs-id='" . $request['request_id'] . "'  class='btn btn-outline-info btn-sm'>Generate invoice</button>";
-                                    } else {
-                                        echo "<button type='button' class='btn btn-outline-success btn-sm' onclick='printInvoice(" . $request['request_id'] . ")'>Print invoice</button>";
-                                    }
+                                    // $checkInvoice = $database->prepare("SELECT * FROM invoices WHERE service_request_id = :request_id");
+                                    // $checkInvoice->bindParam(':request_id', $request['request_id']);
+                                    // $checkInvoice->execute();
+                                    // if ($checkInvoice->rowCount() == 0) {
+                                    //     // echo "<button type='button' data-bs-toggle='modal' data-bs-target='#generateInvoice' data-bs-id='" . $request['request_id'] . "'  class='btn btn-outline-info btn-sm'>Generate invoice</button>";
+                                    // } else {
+                                    echo "<button type='button' class='btn btn-outline-success btn-sm' onclick='printInvoice(" . $request['request_id'] . ")'>Print invoice</button>";
+                                    // }
                                 }
                                 echo "</td>";
                                 echo "</tr>";
@@ -190,8 +311,7 @@ ORDER BY
                 </div>
             </main>
 
-            <div class="modal fade" id="generateInvoice" tabindex="-1" aria-labelledby="generateInvoice"
-                aria-hidden="true">
+            <!-- <div class="modal fade" id="generateInvoice" tabindex="-1" aria-labelledby="generateInvoice" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -202,8 +322,7 @@ ORDER BY
                         <div class="modal-body">
                             <form method="post" id="generateInvoiceForm">
                                 <label for="price_hand_work" class="form-label">Hand Work Price </label>
-                                <input type="number" min="0" name="price_hand_work" id="price_hand_work"
-                                    class="form-control" required>
+                                <input type="number" min="0" name="price_hand_work" id="price_hand_work" class="form-control" required>
                                 <input type="hidden" name="request_id" id="update_request_id">
 
 
@@ -216,7 +335,7 @@ ORDER BY
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <div class="modal fade" id="update" tabindex="-1" aria-labelledby="update" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -262,11 +381,12 @@ ORDER BY
                             <label for="name" class="form-label">Item name</label>
                             <select name="name" id="name" class="form-select" required>
                                 <?php
-                                $items = $database->prepare("SELECT item_id, item_name FROM inventory");
+                                // show item name and brand and model and price
+                                $items = $database->prepare("SELECT item_id, item_price,item_car_name,item_brand, item_model, item_name FROM inventory");
                                 $items->execute();
                                 $items = $items->fetchAll(PDO::FETCH_ASSOC);
                                 foreach ($items as $item) {
-                                    echo "<option value='" . $item['item_id'] . "'>" . $item['item_name'] . "</option>";
+                                    echo "<option value='" . $item['item_id'] . "'>" . $item['item_name'] . " | " . $item['item_brand'] . " | " . $item['item_car_name'] . " | " . $item['item_model'] . " | " . $item['item_price'] . " MAD</option>";
                                 }
                                 ?>
                             </select>
@@ -287,42 +407,8 @@ ORDER BY
         </div>
 
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-        <script>
-        function generateInvoice(request_id, handWordPrice) {
-            fetch("generateInvoice.php", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        request_id: request_id,
-                        handWordPrice: handWordPrice,
-                    }),
 
-                }).then((response) => response.json())
-                .then((data) => {
-                    if (data.success) {
-                        function showToast(message) {
-                            var toast = document.getElementById("toastS");
-                            toast.innerHTML = message;
-                            toast.style.display = "block";
-                            setTimeout(function() {
-                                toast.style.display = "none";
-                            }, 3000);
-                        }
-                        showToast("Inovoice generated successfuly!");
-                    } else {
-                        showToast("Error generating Inovoice!");
-                    }
-                })
-                .then(() => {
-                    window.location.reload();
-                })
-                .catch((error) => {
-                    showBootstrapToast("Error generating invoice.", "bg-danger");
-                    console.error("Error generating invoice:", error);
-                });
-        }
+        <script>
         $(document).ready(function() {
             $('#update').on('show.bs.modal', function(event) {
                 var button = $(event.relatedTarget); // Button that triggered the modal
@@ -330,22 +416,20 @@ ORDER BY
                 var modal = $(this);
                 modal.find('#update_request_id').val(requestId);
             });
-            $('#generateInvoice').on('show.bs.modal', function(event) {
-                var button = $(event.relatedTarget); // Button that triggered the modal
-                var requestId = button.data('bs-id'); // Extract info from data-bs-id attribute
-                var modal = $(this);
-                modal.find('#update_request_id').val(requestId);
-            })
-            $('#generateInvoiceForm').on('submit', function(e) {
-                e.preventDefault(); // Prevent the default form submission
+            // $('#generateInvoice').on('show.bs.modal', function(event) {
+            //     var button = $(event.relatedTarget); // Button that triggered the modal
+            //     var requestId = button.data('bs-id'); // Extract info from data-bs-id attribute
+            //     var modal = $(this);
+            //     modal.find('#update_request_id').val(requestId);
+            // })
+            // $('#generateInvoiceForm').on('submit', function(e) {
+            //     e.preventDefault(); // Prevent the default form submission
 
-                // Gather necessary data
-                var handWordPrice = $('#price_hand_work').val();
-                var request_id = $('#update_request_id').val();
+            //     var request_id = $('#update_request_id').val();
 
-                // Call the generateInvoice function
-                generateInvoice(request_id, handWordPrice);
-            });
+            //     // Call the generateInvoice function
+            //     generateInvoice(request_id);
+            // });
             $('#addPart').on('show.bs.modal', function(event) {
                 var button = $(event.relatedTarget); // Button that triggered the modal
                 var requestId = button.data('bs-id'); // Extract info from data-bs-id attribute

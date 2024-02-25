@@ -45,7 +45,7 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $invoices = $database->prepare("SELECT * FROM invoices");
+                                    $invoices = $database->prepare("SELECT * FROM invoices ORDER BY invoice_date DESC");
                                     $invoices->execute();
                                     $invoices = $invoices->fetchAll(PDO::FETCH_ASSOC);
                                     foreach ($invoices as $invoice) {
@@ -61,7 +61,7 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
                                         $owner->execute();
                                         $owner = $owner->fetch(PDO::FETCH_ASSOC);
                                         echo "<td>" . $owner["client_name"] . "</td>";
-                                        echo "<td>" . $invoice["total_amount"] . "</td>";
+                                        echo "<td>" . $invoice["total_amount"] . " MAD</td>";
                                         echo "<td>" . $invoice["invoice_date"] . "</td>";
                                         echo "<td>
                                         <button class='btn btn-success btn-sm' onclick='printInvoice(" . $invoice["service_request_id"]  . ")'>Print</button>

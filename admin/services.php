@@ -6,7 +6,7 @@ if (!isset($_SESSION['user'])) {
 }
 
 // Ensure that only admins and mechanic have access to the dashboard
-if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic") {
+if ($_SESSION['user']->role !== "admin") {
     header("Location: login.php");
     exit();
 }
@@ -22,11 +22,13 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
     if (isset($_POST["add_service"])) {
         $name = $_POST["name"];
         $type = $_POST["type"];
+        $price = $_POST["price"];
         $description = $_POST["description"];
-        $addService = $database->prepare("INSERT INTO services (service_name, service_type, service_description) VALUES (:service_name, :service_type, :service_description)");
+        $addService = $database->prepare("INSERT INTO services (service_name, service_type, service_description,service_price) VALUES (:service_name, :service_type, :service_description, :service_price)");
         $addService->bindParam(':service_name', $name);
         $addService->bindParam(':service_type', $type);
         $addService->bindParam(':service_description', $description);
+        $addService->bindParam(':service_price', $price);
         $addService->execute();
         echo "<script>window.location.href = 'services.php';</script>";
     }
@@ -71,12 +73,14 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
         $id = $_POST["service_id"];
         $name = $_POST["name"];
         $type = $_POST["type"];
+        $price = $_POST["price"];
         $description = $_POST["description"];
-        $editService = $database->prepare("UPDATE services SET service_name = :service_name, service_type = :service_type, service_description = :service_description WHERE service_id = :service_id");
+        $editService = $database->prepare("UPDATE services SET service_name = :service_name, service_type = :service_type, service_description = :service_description, service_price = :service_price WHERE service_id = :service_id");
         $editService->bindParam(':service_name', $name);
         $editService->bindParam(':service_type', $type);
         $editService->bindParam(':service_description', $description);
         $editService->bindParam(':service_id', $id);
+        $editService->bindParam(':service_price', $price);
         $editService->execute();
         echo "<script>window.location.href = 'services.php';</script>";
     }
@@ -105,12 +109,13 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
                                 <th>Name</th>
                                 <th>Type</th>
                                 <th>Description</th>
+                                <th>Price</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            $services = $database->prepare("SELECT * FROM services");
+                            $services = $database->prepare("SELECT * FROM services ORDER BY service_id DESC");
                             $services->execute();
                             $services = $services->fetchAll(PDO::FETCH_ASSOC);
                             foreach ($services as $service) {
@@ -119,6 +124,7 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
                                 echo "<td>" . $service["service_name"] . "</td>";
                                 echo "<td>" . $service["service_type"] . "</td>";
                                 echo "<td>" . $service["service_description"] . "</td>";
+                                echo "<td>" . $service["service_price"] . " MAD</td>";
                                 echo "<td>";
                                 echo '<button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editService" data-bs-id="' . $service["service_id"] . '">Edit</button>';
                                 // echo '<button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteService" data-bs-id="' . $service["service_id"] . '">Delete</button>';
@@ -173,6 +179,8 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
                             <option value="Repair">Repair</option>
                             <option value="Maintenance">Maintenance</option>
                         </select>
+                        <label for="price" class="mt-3 form-label">Service price</label>
+                        <input type="number" min="0" name="price" id="price" class="form-control mb-3" required>
 
                         <label for="description" class="form-label">Description</label>
                         <textarea name="description" id="description" rows="4" class="form-control"></textarea>
@@ -205,6 +213,9 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
                             <option value="Repair">Repair</option>
                             <option value="Maintenance">Maintenance</option>
                         </select>
+
+                        <label for="price" class="mt-3 form-label">Service price</label>
+                        <input type="number" min="0" name="price" id="price" class="form-control mb-3" required>
 
                         <label for="description" class="form-label">Description</label>
                         <textarea name="description" id="description" rows="4" class="form-control"></textarea>

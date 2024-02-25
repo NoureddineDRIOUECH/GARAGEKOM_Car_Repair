@@ -61,7 +61,8 @@
 
                 <!-- Add Employee Form -->
                 <div class="mb-4">
-                    <button type="button" class="btn btn-warning mt-4" data-bs-toggle="modal" data-bs-target="#addEmployee">Add Employee</button>
+                    <button type="button" class="btn btn-warning mt-4" data-bs-toggle="modal"
+                        data-bs-target="#addEmployee">Add Employee</button>
                 </div>
 
                 <!-- Employee List Table -->
@@ -82,7 +83,7 @@
                         </thead>
                         <tbody>
                             <?php
-                            $employees = $database->prepare("SELECT * FROM employees");
+                            $employees = $database->prepare("SELECT * FROM employees ORDER BY employee_added_date DESC");
                             $employees->execute();
                             $employees = $employees->fetchAll(PDO::FETCH_ASSOC);
                             foreach ($employees as $employee) {
@@ -91,7 +92,7 @@
                                 echo "<td>" . $employee["employee_name"] . "</td>";
                                 echo "<td>" . $employee["employee_phone"] . "</td>";
                                 echo "<td>" . $employee["employee_address"] . "</td>";
-                                echo "<td>" . number_format($employee["employee_salary"], 2, '.', ' ') . "</td>";
+                                echo "<td>" . number_format($employee["employee_salary"], 0, '.', ' ') . " MAD</td>";
                                 echo "<td>" . $employee["employee_position"] . "</td>";
                                 echo "<td>" . $employee["employee_added_date"] . "</td>";
                                 echo "<td>";
@@ -124,10 +125,12 @@
                                 <input type="tel" name="phone" id="phone" class="form-control mb-3" required>
 
                                 <label for="position" class="form-label">Position</label>
-                                <input type="text" name="position" id="position" class="form-control mb-3" required>
+                                <input type="text" placeholder="Ex: Mechanic" name="position" id="position"
+                                    class="form-control mb-3" required>
 
                                 <label for="salary" class="form-label">Salary</label>
-                                <input type="number" name="salary" id="salary" class="form-control mb-3" required>
+                                <input type="number" min="2000" name="salary" id="salary" class="form-control mb-3"
+                                    required>
                                 <input type="hidden" name="employee_id" id="edit_employee_id">
 
                         </div>
@@ -140,7 +143,8 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="deleteEmployee" tabindex="-1" aria-labelledby="deleteEmployee" aria-hidden="true">
+            <div class="modal fade" id="deleteEmployee" tabindex="-1" aria-labelledby="deleteEmployee"
+                aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -183,10 +187,12 @@
                                 <input type="tel" name="phone" id="phone" class="form-control mb-3" required>
 
                                 <label for="position" class="form-label">Position</label>
-                                <input type="text" name="position" id="position" class="form-control mb-3" required>
+                                <input type="text" placeholder="Ex: Mechanic" name="position" id="position"
+                                    class="form-control mb-3" required>
 
                                 <label for="salary" class="form-label">Salary</label>
-                                <input type="number" min="2000" name="salary" id="salary" class="form-control mb-3" required>
+                                <input type="number" min="2000" name="salary" id="salary" class="form-control mb-3"
+                                    required>
 
                         </div>
                         <div class="modal-footer">
@@ -200,21 +206,21 @@
 
             <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
             <script>
-                // Edit Employee Modal
-                $('#editEmployee').on('show.bs.modal', function(event) {
-                    var button = $(event.relatedTarget); // Button that triggered the modal
-                    var employeeId = button.data('bs-id'); // Extract info from data-bs-id attribute
-                    var modal = $(this);
-                    modal.find('#edit_employee_id').val(employeeId);
-                });
+            // Edit Employee Modal
+            $('#editEmployee').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var employeeId = button.data('bs-id'); // Extract info from data-bs-id attribute
+                var modal = $(this);
+                modal.find('#edit_employee_id').val(employeeId);
+            });
 
-                // Delete Employee Modal
-                $('#deleteEmployee').on('show.bs.modal', function(event) {
-                    var button = $(event.relatedTarget); // Button that triggered the modal
-                    var employeeId = button.data('bs-id'); // Extract info from data-bs-id attribute
-                    var modal = $(this);
-                    modal.find('#delete_employee_id').val(employeeId);
-                });
+            // Delete Employee Modal
+            $('#deleteEmployee').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var employeeId = button.data('bs-id'); // Extract info from data-bs-id attribute
+                var modal = $(this);
+                modal.find('#delete_employee_id').val(employeeId);
+            });
             </script>
 
 </body>

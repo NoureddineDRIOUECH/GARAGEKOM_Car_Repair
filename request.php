@@ -8,13 +8,14 @@
 <body>
     <?php require_once('admin/connect-DB.php');
 
+
     if (isset($_POST['submit'])) {
         $name = $_POST['fullName'];
         $phone = $_POST['phoneNumber'];
         $email = $_POST['email'];
         $address = $_POST['address'];
         $carReg = $_POST['carRegistration'];
-        $requestType = $_POST['requestType'];
+        $problem = $_POST['problem'];
         $serviceWanted = $_POST['servicesWanted'];
         $carBrand = $_POST['carBrand'];
         $carModel = $_POST['carModel'];
@@ -43,87 +44,117 @@
         // Get last inserted car ID
         $carId = $database->lastInsertId();
 
-        // Get available employee ID (You may need to adjust this logic based on your requirements)
-        $employeeId = $database->query('SELECT employee_id FROM employees ORDER BY RAND() LIMIT 1')->fetchColumn();
+        $employeeId = $database->query('SELECT employees.employee_id FROM employees LEFT JOIN service_requests ON employees.employee_id = service_requests.employee_id GROUP BY employees.employee_id ORDER BY COUNT(service_requests.request_id) ASC LIMIT 1')->fetchColumn();
+
+        // $employeeId = $database->query('SELECT employee_id FROM employees ORDER BY RAND() LIMIT 1')->fetchColumn();
 
         // Add service request
-        $addRequest = $database->prepare('INSERT INTO service_requests (client_id, service_id, car_id, employee_id, request_date) VALUES (:clientId, :serviceId, :carId, :employeeId , NOW())');
+        $addRequest = $database->prepare('INSERT INTO service_requests (client_id, service_id, car_id, employee_id,problem_description, request_date) VALUES (:clientId, :serviceId, :carId, :employeeId , :problem, NOW())');
         $addRequest->bindParam(':clientId', $clientId);
         $addRequest->bindParam(':serviceId', $serviceWanted);
         $addRequest->bindParam(':carId', $carId);
         $addRequest->bindParam(':employeeId', $employeeId);
+        $addRequest->bindParam(':problem', $problem);
         if ($addRequest->execute()) {
+            $getService = "SELECT services.service_name FROM services WHERE services.service_id = :serviceId";
+            $query = $database->prepare($getService);
+            $query->bindParam(':serviceId', $serviceWanted, PDO::PARAM_INT);
+            $query->execute();
+            $result = $query->fetch();
+            $serviceName = $result["service_name"];
             require_once "mail.php";
             $mail->addAddress($email);
             $mail->Subject = "Service Request";
-            $mail->Body = "
-            <!DOCTYPE html>
-            <html lang='en'>
-            <head>
-                <meta charset='UTF-8'>
-                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                <title>GARAGEKOM Service Request Confirmation</title>
-                <style>
-                    body {
-                        font-family: 'Roboto', sans-serif;
-                        background-color: #f4f4f4;
-                        color: #333;
-                        margin: 0;
-                        padding: 20px;
-                    }
-                    .container {
-                        max-width: 600px;
-                        margin: 0 auto;
-                        background-color: #fff;
-                        border-radius: 5px;
-                        overflow: hidden;
-                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                        border-radius : 25px;
-                    }
-                    .bg-primary {
-                        background-color: #0d6efd;
-                        padding: 20px;
-                        color: #fff;
-                    }
-                    .text-primary {
-                        color: #0d6efd;
-                    }
-                    .p-4 {
-                        padding: 20px;
-                    }
-                    .bg-light {
-                        background-color: #f8f9fa;
-                        padding: 10px;
-                        text-align: center;
-                    }
-                    .text-muted {
-                        color: #6c757d;
-                    }
-                </style>
-            </head>
-            <body>
-                <table class='container'>
-                    <tr>
-                        <td class='bg-primary text-center'>
-                            <h1 class='mb-0'>GARAGEKOM</h1>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class='p-4'>
-                            <h2 class='text-primary'>Service Request Confirmation</h2>
-                            <p>Thank you for your request. We will get back to you shortly.</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class='bg-light'>
-                            <p class='mb-0 text-muted'>GARAGEKOM - Casablanca</p>
-                        </td>
-                    </tr>
-                </table>
-            </body>
-            </html>
-            ";
+            $mail->Body = "<!DOCTYPE html>
+<html lang='en'>
 
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>GARAGEKOM Service Request Confirmation</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        a{
+            text-decoration : none;
+            }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 25px;
+        }
+
+        .bg-primary {
+            background-color: #0d6efd;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .text-primary {
+            color: #0d6efd;
+        }
+
+        .p-4 {
+            padding: 20px;
+        }
+
+        .bg-light {
+            background-color: #f8f9fa;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .text-muted {
+            color: #6c757d;
+        }
+    </style>
+</head>
+
+<body>
+    <table class='container'>
+        <tr>
+            <td class='bg-primary text-center'>
+                <h1 class='mb-0'>GARAGEKOM</h1>
+            </td>
+        </tr>
+        <tr>
+            <td class='p-4'>
+                <h2 class='text-primary'>Service Request Confirmation</h2>
+                <p>Dear " . $name . ",</p>
+                <p>Thank you for choosing Garagekom for your service needs. Your request has been received and is being processed. Here is a summary of your request:</p>
+                <ul>
+                    <li>Services Wanted:  " . $serviceName . "</li>
+                    <li>Car Information:  [ " . $carBrand . " ] [ " . $carName . " ] [ " . $carModel . " ] [ " . $carReg . " ]</li>
+                </ul>
+                <p>Next steps:</p>
+                <ul>
+                    <li>A mechanic will contact you within 24 hours to schedule an appointment.</li>
+                    <li>Please bring your car to our garage at the scheduled time.</li>
+                </ul>
+                <p>If you have any questions or concerns, please contact us at +212660133665 or <a href='mailto:noureddine@garagekom.com'>noureddine@garagekom.com</a>.</p>
+                <p>Thank you for choosing Garagekom!</p>
+                <p>Best regards,</p>
+                <p>Garagekom Team</p>
+            </td>
+        </tr>
+        <tr>
+            <td class='bg-light'>
+                <p class='mb-0 text-muted'>GARAGEKOM - Casablanca</p>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>";
             $mail->setFrom("oyuncoyt@gmail.com", "Garagekom");
             $mail->send();
             header('Location: request.php?success=true');
@@ -165,11 +196,11 @@
                     <label class="form-label" for="carRegistration">Car Registration:</label>
                     <input class="form-control mb-2" type="text" id="carRegistration" placeholder="example :  36176 A 10" name="carRegistration" required>
 
-                    <label class="form-label" for="requestType">Request Type:</label>
+                    <!-- <label class="form-label" for="requestType">Request Type:</label>
                     <select id="requestType" name="requestType" class="form-select mb-2" required>
                         <option value="maintenance">Maintenance</option>
                         <option value="repair">Repair</option>
-                    </select>
+                    </select> -->
 
                     <label class="form-label" for="servicesWanted">Services Wanted:</label>
                     <select name="servicesWanted" id="servicesWanted" class="form-select mb-2">
@@ -180,6 +211,9 @@
                         }
                         ?>
                     </select>
+                    <label class="form-label" for="problem">Problem <span class="text-success">(Optionnel)
+                        </span>:</label>
+                    <textarea class="form-control mb-2" placeholder="Describe your problem..." name="problem" id="problem" cols="10" rows="5"></textarea>
                     <input class="btn btn-primary mt-3" type="submit" value="Submit Request" name="submit">
                 </form>
             </div>

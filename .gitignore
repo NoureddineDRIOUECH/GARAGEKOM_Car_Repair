@@ -2,3 +2,4 @@ vendor/
 *.json
 *.lock
 mail.php
+*.scss

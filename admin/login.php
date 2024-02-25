@@ -4,9 +4,9 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('.toast').toast('show');
-    });
+$(document).ready(function() {
+    $('.toast').toast('show');
+});
 </script>
 
 <title>GARAGEKOM | Admin</title>
@@ -85,7 +85,7 @@
 
                     <input name="login" class="mt-3 btn btn-primary" type="submit" value="Login">
                 </form>
-                <!-- <p><a href="forgot-password.php" class="text-decoration-none">Forgot your password?</a></p> -->
+                <p><a href="forgot-password.php" class="text-decoration-none">Forgot your password?</a></p>
             </div>
         </div>
     </div>

@@ -1,9 +1,13 @@
 <nav
   id="sidebar"
-  class="col-md-3 col-lg-2 d-md-block bg-light bg-opacity-75 text-white sidebar"
+  class="col-md-3 col-lg-2 d-md-block bg-light bg-opacity-75 text-white sidebar collapse"
 >
   <div class="position-sticky">
-    <h3 class="text-center mb-4 text-primary">Garagekom</h3>
+    <h3 class="text-center mb-4">
+      <a href="dashboard.php" class="text-decoration-none text-primary"
+        >Garagekom</a
+      >
+    </h3>
     <ul class="nav flex-column">
       <!-- Dashboard -->
       <li class="nav-item">
@@ -73,7 +77,7 @@
 
 <!-- Toggle Sidebar Button for Small Screens -->
 <button
-  class="btn btn-primary d-md-none mt-2"
+  class="btn btn-primary d-md-none mt-2 navbar-toggler"
   type="button"
   data-bs-toggle="collapse"
   data-bs-target="#sidebar"

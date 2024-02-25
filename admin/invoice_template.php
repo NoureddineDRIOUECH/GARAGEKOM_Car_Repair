@@ -12,6 +12,10 @@
         font-family: 'Arial', sans-serif;
     }
 
+    a {
+        text-decoration: none;
+    }
+
     .container {
         background-color: #fff;
         padding: 20px;
@@ -135,14 +139,24 @@
         <!-- Total Amount and Handwork Amount -->
         <div class='d-flex flex-wrap justify-content-between mt-4'>
             <div class='col-md-6'>
-
-                <p><strong>Handwork Amount:</strong></p>
+                <p><strong>Service Price:</strong></p>
                 <p><strong>Total Amount:</strong></p>
             </div>
             <div class='col-md-6 text-end'>
                 <p class='text-primary'><strong><?php echo $invoice['total_amount'] - $totalItemPrice ?> MAD</strong>
-                <p class='text-primary'><strong><?php echo $invoice['total_amount'] ?> MAD</strong></p>
                 </p>
+                <p class='text-primary'><strong><?php echo $invoice['total_amount'] ?> MAD</strong></p>
+            </div>
+        </div>
+
+        <!-- Pick Up Instructions -->
+        <div class='d-flex flex-wrap justify-content-between mt-4'>
+            <div class='col-md-6'>
+                <h4 class='text-primary'>Pick Up Instructions</h4>
+                <p>Your car is now ready for pick up. Please come to our garage during business hours to retrieve your
+                    car.</p>
+                <p>If you have any questions or concerns, please contact us at <a href="tel:+212 660 1318 89">+212 660
+                        1318 89</a> or <a href="mailto:noureddine@garagekom.com">noureddine@garagekom.com</a></p>
             </div>
         </div>
 

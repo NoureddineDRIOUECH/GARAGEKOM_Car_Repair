@@ -35,7 +35,7 @@
                         </thead>
                         <tbody>
                             <?php
-                            $messages = $database->prepare("SELECT * FROM contacts");
+                            $messages = $database->prepare("SELECT * FROM contacts ORDER BY id DESC");
                             $messages->execute();
                             $messages = $messages->fetchAll(PDO::FETCH_ASSOC);
                             foreach ($messages as $message) {

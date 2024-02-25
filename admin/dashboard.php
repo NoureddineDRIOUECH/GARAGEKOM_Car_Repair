@@ -115,15 +115,15 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
                             <th>Car Registration</th>
                             <!-- <th>Service Type</th> -->
                             <th>Request</th>
-                            <th>Parts Added</th>
+                            <!-- <th>Parts Added</th> -->
                             <th>Mechanic</th>
-                            <th>Status</th>
+                            <th>Problem</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        $requests = $database->prepare("SELECT * FROM service_requests WHERE status = 'Pending'");
+                        $requests = $database->prepare("SELECT * FROM service_requests WHERE status = 'Pending' ORDER BY request_date DESC");
                         $requests->execute();
                         $requests = $requests->fetchAll(PDO::FETCH_ASSOC);
                         if ($requests) {
@@ -155,25 +155,31 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
                                 $partsAdded->execute();
                                 $addedPartsCount = $partsAdded->rowCount(); // Count of added parts
 
-                                echo "<td>";
-                                if ($addedPartsCount > 0) {
-                                    while ($part = $partsAdded->fetch(PDO::FETCH_ASSOC)) {
-                                        $itemNameQuery = $database->prepare("SELECT item_name FROM inventory WHERE item_id = :item_id");
-                                        $itemNameQuery->bindParam(':item_id', $part['item_id']);
-                                        $itemNameQuery->execute();
-                                        $itemName = $itemNameQuery->fetchColumn();
-                                        echo "<span class='text-warning-emphasis'>" . $itemName . "</span> x <span class='text-warning-emphasis'>" . $part['quantity_used'] . "</span><br>";
-                                    }
-                                } else {
-                                    echo "<span class='text-secondary-emphasis'>No Parts In this request</span>";
-                                }
-                                echo "</td>";
+                                // echo "<td>";
+                                // if ($addedPartsCount > 0) {
+                                //     while ($part = $partsAdded->fetch(PDO::FETCH_ASSOC)) {
+                                //         $itemNameQuery = $database->prepare("SELECT item_name FROM inventory WHERE item_id = :item_id");
+                                //         $itemNameQuery->bindParam(':item_id', $part['item_id']);
+                                //         $itemNameQuery->execute();
+                                //         $itemName = $itemNameQuery->fetchColumn();
+                                //         echo "<span class='text-warning-emphasis'>" . $itemName . "</span> x <span class='text-warning-emphasis'>" . $part['quantity_used'] . "</span><br>";
+                                //     }
+                                // } else {
+                                //     echo "<span class='text-secondary-emphasis'>No Parts In this request</span>";
+                                // }
+                                // echo "</td>";
                                 $employee = $database->prepare("SELECT employee_name FROM service_requests INNER JOIN employees ON service_requests.employee_id = employees.employee_id WHERE request_id = :request_id");
                                 $employee->bindParam(':request_id', $request['request_id']);
                                 $employee->execute();
                                 $employee = $employee->fetch();
                                 echo "<td>" . $employee['employee_name'] . "</td>";
-                                echo "<td>" . $request['status'] . "</td>";
+                                // check if problem description is null or empty and show "n/a" if it is
+                                // a function to check if the content is just a space
+                                if (empty(trim($request['problem_description']))) {
+                                    echo "<td><span class='text-secondary-emphasis'>N/A</span></td>";
+                                } else {
+                                    echo "<td>" . $request['problem_description'] . "</td>";
+                                }
                                 echo "<td>";
                                 echo "<button type='button' class='btn btn-outline-primary btn-sm' data-bs-toggle='modal' data-bs-target='#update' data-bs-id='" . $request['request_id'] . "' >Update status</button>";
 

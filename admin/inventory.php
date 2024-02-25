@@ -79,7 +79,7 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
                         </thead>
                         <tbody>
                             <?php
-                            $items = $database->prepare("SELECT * FROM inventory");
+                            $items = $database->prepare("SELECT * FROM inventory ORDER BY item_id DESC");
                             $items->execute();
                             $items = $items->fetchAll(PDO::FETCH_ASSOC);
                             foreach ($items as $item) {

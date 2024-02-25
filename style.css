@@ -75,153 +75,32 @@
   box-shadow: none;
 }
 
-/* Add your existing styles and any additional styles for the "Login" section here */
 #login {
   padding: 40px 0;
 }
 
 .section-heading {
   font-size: 2.5rem;
-  color: #007BFF; /* You can adjust the color as needed */
+  color: #007bff;
 }
 
 .row {
   margin-top: 40px;
 }
 
-form {
-  text-align: center;
-}
-
 label {
   display: block;
   margin-bottom: 5px;
-  color: #007BFF; /* You can adjust the color as needed */
-}
-
-input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  box-sizing: border-box;
 }
 
 input[type=submit] {
-  background-color: #007BFF; /* You can adjust the color as needed */
+  background-color: #007bff;
   color: #fff;
   cursor: pointer;
 }
 
 input[type=submit]:hover {
-  background-color: #0056b3; /* You can adjust the color as needed */
-}
-
-/* Additional styles for the links */
-a {
-  color: #007BFF;
-  text-decoration: none;
-}
-
-/* Add your existing styles and any additional styles for the "Sign Up" section here */
-#signup {
-  padding: 40px 0;
-}
-
-.section-heading {
-  font-size: 2.5rem;
-  color: #007BFF; /* You can adjust the color as needed */
-}
-
-.row {
-  margin-top: 40px;
-}
-
-form {
-  text-align: center;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-  color: #007BFF; /* You can adjust the color as needed */
-}
-
-input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-input[type=submit] {
-  background-color: #007BFF; /* You can adjust the color as needed */
-  color: #fff;
-  cursor: pointer;
-}
-
-input[type=submit]:hover {
-  background-color: #0056b3; /* You can adjust the color as needed */
-}
-
-/* Additional styles for the links */
-a {
-  color: #007BFF;
-  text-decoration: none;
-}
-
-/* Add your existing styles and any additional styles for the "Home" section here */
-#home {
-  padding: 100px 0;
-  background-image: url(src/pics/homeBg.jpeg);
-  height: 750px;
-  border-radius: 20px;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-.main-heading {
-  font-size: 3rem;
-  color: #007BFF; /* You can adjust the color as needed */
-}
-
-.sub-heading {
-  font-size: 1.5rem;
-  font-style: italic;
-  color: #6C757D; /* You can adjust the color as needed */
-}
-
-/* Add your existing styles and any additional styles for the "Service Request" section here */
-#request {
-  padding: 40px 0;
-}
-
-.section-heading {
-  font-size: 2.5rem;
-  color: #007BFF; /* You can adjust the color as needed */
-}
-
-.section-subheading {
-  font-size: 1.25rem;
-  font-style: italic;
-  color: #6C757D; /* You can adjust the color as needed */
-}
-
-.row {
-  margin-top: 40px;
-}
-
-form {
-  text-align: left;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-  color: #007BFF; /* You can adjust the color as needed */
+  background-color: #0056b3;
 }
 
 input,
@@ -235,38 +114,77 @@ textarea {
   box-sizing: border-box;
 }
 
-input[type=submit] {
-  background-color: #007BFF; /* You can adjust the color as needed */
-  color: #fff;
-  cursor: pointer;
+a {
+  color: #007bff;
+  text-decoration: none;
 }
 
-input[type=submit]:hover {
-  background-color: #0056b3; /* You can adjust the color as needed */
+#signup {
+  padding: 40px 0;
 }
 
-/* Add your existing styles and any additional styles for the "Contact Us" section here */
+.section-heading {
+  font-size: 2.5rem;
+  color: #007bff;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+#home {
+  padding: 100px 0;
+  background-image: url(src/pics/homeBg.jpeg);
+  height: 750px;
+  border-radius: 20px;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.main-heading {
+  font-size: 3rem;
+  color: #007bff;
+}
+
+.sub-heading {
+  font-size: 1.5rem;
+  font-style: italic;
+  color: #6c757d;
+}
+
+#request {
+  padding: 40px 0;
+}
+
+.section-heading {
+  font-size: 2.5rem;
+  color: #007bff;
+}
+
+.section-subheading {
+  font-size: 1.25rem;
+  font-style: italic;
+  color: #6c757d;
+}
+
+form {
+  text-align: left;
+}
+
 #contact {
   padding: 40px 0;
 }
 
 .section-heading {
   font-size: 2.5rem;
-  color: #007BFF; /* You can adjust the color as needed */
+  color: #007bff;
 }
 
 .section-subheading {
   font-size: 1.25rem;
   font-style: italic;
-  color: #6C757D; /* You can adjust the color as needed */
-}
-
-.row {
-  margin-top: 40px;
-}
-
-h3 {
-  color: #007BFF; /* You can adjust the color as needed */
+  color: #6c757d;
 }
 
 .contact-info {
@@ -278,54 +196,19 @@ h3 {
   margin-bottom: 10px;
 }
 
-form {
-  text-align: left;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-  color: #007BFF; /* You can adjust the color as needed */
-}
-
-input,
-textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-input[type=submit] {
-  background-color: #007BFF; /* You can adjust the color as needed */
-  color: #fff;
-  cursor: pointer;
-}
-
-input[type=submit]:hover {
-  background-color: #0056b3; /* You can adjust the color as needed */
-}
-
-/* Add your existing styles and any additional styles for the "Services" section here */
 #services {
   padding: 40px 0;
 }
 
 .section-heading {
   font-size: 2.5rem;
-  color: #007BFF; /* You can adjust the color as needed */
+  color: #007bff;
 }
 
 .section-subheading {
   font-size: 1.25rem;
   font-style: italic;
-  color: #6C757D; /* You can adjust the color as needed */
-}
-
-.row {
-  margin-top: 40px;
+  color: #6c757d;
 }
 
 .service-item {
@@ -339,36 +222,26 @@ img {
 }
 
 h3 {
-  color: #007BFF; /* You can adjust the color as needed */
+  color: #007bff;
 }
 
-/* Add your existing styles and any additional styles for the "About" section here */
 #about {
   padding: 40px 0;
 }
 
 .section-heading {
   font-size: 2.5rem;
-  color: #007BFF; /* You can adjust the color as needed */
+  color: #007bff;
 }
 
 .section-subheading {
   font-size: 1.25rem;
   font-style: italic;
-  color: #6C757D; /* You can adjust the color as needed */
-}
-
-/* Styles for the image and mission/why choose sections */
-.row {
-  margin-top: 40px;
+  color: #6c757d;
 }
 
 img {
   border-radius: 8px;
-}
-
-h3 {
-  color: #007BFF; /* You can adjust the color as needed */
 }
 
 footer h3 {
