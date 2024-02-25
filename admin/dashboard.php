@@ -30,11 +30,93 @@ if ($_SESSION['user']->role !== "admin" && $_SESSION['user']->role !== "mechanic
             <?php require_once('connect-DB.php') ?>
             <?php
             if (isset($_POST['update_status'])) {
+                $value = $_POST['status'];
+                $request_id = $_POST['request_id'];
+                if ($value == "Completed") {
+                    echo "<script>generateInvoice(" . $request_id . ")</script>";
+                }
+                if ($value == "In progress") {
+                    $clientName = $database->prepare("SELECT client_name, client_email FROM service_requests INNER JOIN clients ON service_requests.client_id = clients.client_id WHERE request_id = :request_id");
+                    $clientName->bindParam(':request_id', $request_id);
+                    $clientName->execute();
+                    $clientName = $clientName->fetch();
+
+                    $subject = "Service Request Updated";
+                    $message = "
+                <!DOCTYPE html>
+        <html>
+        <head>
+          <title>GARAGEKOM | Service Request Update</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              margin: 0;
+              padding: 0;
+            }
+        
+            .container {
+              width: 600px;
+              margin: 20px auto;
+              border-radius: 5px;
+              background-color: #f5f5f5;
+              padding: 20px;
+            }
+        
+            h2 {
+              background-color: #0d6efd;
+              color: #fff;
+              padding: 15px;
+              border-radius: 5px;
+              font-size: 20px;
+              margin-bottom: 15px;
+            }
+        
+            p {
+              font-size: 16px;
+              line-height: 1.5;
+              margin-bottom: 10px;
+            }
+        
+            a {
+              color: #0d6efd;
+              text-decoration: none;
+            }
+          </style>
+        </head>
+        
+        <body>
+          <div class='container'>
+            <h2>GARAGEKOM | Service Request Updated</h2>
+            <p>Dear " . $clientName['client_name'] . ",</p>
+            <p>We are writing to inform you that your service request with ID " . $request_id . " has been updated to 'In progress.' Our dedicated team is currently working on it, and we will keep you informed of the progress.</p>
+            <p>We appreciate your patience and understanding. If you have any questions or concerns, please do not hesitate to contact us by replying to this email or calling us at <a href='tel:+212660133665'>06-60-13-36-65</a>.</p>
+            <p>Sincerely,</p>
+            <p>The GARAGEKOM Team</p>
+          </div>
+        </body>
+        </html>
+                ";
+                    require_once "../mail.php";
+                    $mail->addAddress($clientName['client_email']);
+
+                    $mail->Subject = $subject;
+                    $mail->Body = $message;
+                    $mail->setFrom("oyuncoyt@gmail.com", "Garagekom");
+                    $mail->send();
+                }
+
                 $updateStatus = $database->prepare("UPDATE service_requests SET status = :request_status WHERE request_id = :request_id");
-                $updateStatus->bindParam(':request_status', $_POST['status']);
-                $updateStatus->bindParam(':request_id', $_POST['request_id']);
+                $updateStatus->bindParam(':request_status', $value);
+                $updateStatus->bindParam(':request_id', $request_id);
                 $updateStatus->execute();
-                echo "<script>window.location.href = 'dashboard.php';</script>";
+                echo "<script>window.location.href = 'service-request.php';</script>";
+
+
+                $updateStatus = $database->prepare("UPDATE service_requests SET status = :request_status WHERE request_id = :request_id");
+                $updateStatus->bindParam(':request_status', $value);
+                $updateStatus->bindParam(':request_id', $request_id);
+                $updateStatus->execute();
+                echo "<script>window.location.href = 'service-request.php';</script>";
             }
             ?>
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-4">
